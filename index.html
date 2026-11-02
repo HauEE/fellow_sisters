@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>好姊妹好習慣同盟</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FAF8F5;
+            --card-bg: #FFFFFF;
+            --primary: #87A89D; /* 鼠尾草綠 */
+            --primary-light: #E8F0EC;
+            --accent: #E2A299; /* 溫柔霧粉 */
+            --text-main: #5A524C;
+            --text-light: #9C938D;
+            --border-radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 24px rgba(135, 168, 157, 0.12);
+            padding: 16px;
+            margin: 0;
+            height: fit-content;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        header h1 {
+            font-size: 22px;
+            color: var(--primary);
+            margin-bottom: 2px;
+        }
+
+        header p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* 聖經金句與隨機打氣卡片 */
+        .verse-card {
+            background: var(--primary-light);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--primary);
+            text-align: center;
+            line-height: 1.4;
+            border-left: 4px solid var(--primary);
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .verse-card:hover {
+            background: #dfece6;
+        }
+
+        .verse-card span {
+            display: block;
+            font-size: 11px;
+            margin-top: 4px;
+            color: var(--text-light);
+            font-weight: 700;
+        }
+
+        .cheer-refresh-tip {
+            font-size: 10px !important;
+            color: var(--accent) !important;
+            margin-top: 6px !important;
+        }
+
+        /* 身分切換與個人名稱列 */
+        .user-switcher {
+            background: var(--bg-color);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            border: 1px solid #E5E0DA;
+        }
+
+        .user-switcher label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .user-switcher select {
+            padding: 6px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--primary);
+            background: white;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* 導覽頁籤 */
+        .tabs {
+            display: flex;
+            background: var(--bg-color);
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 20px;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 4px;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-light);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            font-weight: 700;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* 週次選取與切換器 */
+        .week-picker-box {
+            background: var(--bg-color);
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #E5E0DA;
+        }
+
+        .week-picker-box select {
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--primary);
+            outline: none;
+            font-size: 13px;
+            color: var(--text-main);
+            background: white;
+            cursor: pointer;
+        }
+
+        /* 習慣卡片區 */
+        .habit-card {
+            background: var(--bg-color);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+
+        .habit-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .habit-info h3 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .habit-info span {
+            font-size: 12px;
+            color: var(--text-light);
+            background: var(--primary-light);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .check-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .check-btn.checked {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 好友動態牆 */
+        .friend-item {
+            background: var(--bg-color);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        .friend-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .progress-bar-bg {
+            background: #E5E0DA;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-fill {
+            background: var(--accent);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .friend-habits-detail {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .friend-habit-tag {
+            font-size: 12px;
+            background: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid #E5E0DA;
+            color: var(--text-light);
+        }
+
+        .friend-habit-tag.done {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+            font-weight: 500;
+        }
+
+        .friend-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #EAE4DC;
+            padding-top: 8px;
+        }
+
+        .cheer-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .cheer-btn:hover {
+            background: rgba(226, 162, 153, 0.15);
+        }
+
+        .cheer-count {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* 設定區 */
+        .setting-group {
+            margin-bottom: 16px;
+        }
+
+        .setting-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 6px;
+        }
+
+        .setting-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #E5E0DA;
+            border-radius: 12px;
+            outline: none;
+            font-size: 14px;
+            background: var(--bg-color);
+            margin-bottom: 8px;
+        }
+
+        .setting-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .habit-input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .habit-input-row input {
+            margin-bottom: 0;
+        }
+
+        .delete-btn {
+            background: #F4E8E6;
+            color: var(--accent);
+            border: none;
+            padding: 0 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .secondary-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            padding: 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .primary-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .primary-btn:hover {
+            opacity: 0.9;
+        }
+
+        .tip {
+            font-size: 12px;
+            color: var(--text-light);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* 自訂 Toast 提示 */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #5A524C;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 雲端同步狀態標籤 */
+        .sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #E8F0EC;
+            color: #87A89D;
+            margin-top: 4px;
+        }
+        .sync-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #87A89D;
+            display: inline-block;
+        }
+    </style>
+    
+    <!-- Firebase SDK 引入 (使用 Compatibility 版本簡化調用) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🌸好姊妹好習慣同盟🌱</h1>
+        <p>每天進步一點點，和姊妹們一起健康美麗 ✨</p>
+        <div class="sync-badge" id="syncBadge"><span class="sync-dot"></span> 跨手機即時雲端同步中</div>
+    </header>
+
+    <!-- 隨機打氣金句區 -->
+    <div class="verse-card" id="cheerCard" onclick="refreshCheerMessage()">
+        <div id="cheerText">「你們要彼此相愛，像我愛你們一樣，這就是我的命令。」</div>
+        <span id="cheerAuthor">—— 約翰福音 15:12 🌸 在愛與陪伴中成長</span>
+        <span class="cheer-refresh-tip">💡 點擊可換下一句打氣語錄</span>
+    </div>
+
+    <!-- 身分切換與用家名字顯示 -->
+    <div class="user-switcher">
+        <label for="userSelect">👤 當前參與者：</label>
+        <select id="userSelect" onchange="switchUser(this.value)">
+            <!-- 動態產生參與者選項 -->
+        </select>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('habits', event)">今週表現榜</button>
+        <button class="tab-btn" onclick="switchTab('friends', event)">姊妹動態 (看詳細項目)</button>
+        <button class="tab-btn" onclick="switchTab('settings', event)">我的資料與目標</button>
+    </div>
+
+    <!-- Tab 1: 今週表現榜 & 週次選取記錄 -->
+    <div id="habits" class="section active">
+        <!-- 檢視過去週次選擇器 -->
+        <div class="week-picker-box">
+            <label for="weekSelect" style="font-size: 13px; font-weight: 700; color: var(--text-main);">📅 檢視週次：</label>
+            <select id="weekSelect" onchange="changeWeek(this.value)">
+                <!-- 動態產生週次選單 -->
+            </select>
+        </div>
+
+        <!-- 本週表現統計總覽 -->
+        <div id="weeklyOverview" style="background: var(--primary-light); padding: 12px; border-radius: 12px; margin-bottom: 16px; text-align: center;">
+            <!-- 動態顯示本週完成率與數據 -->
+        </div>
+
+        <div id="habitListContainer"></div>
+    </div>
+
+    <!-- Tab 2: 姊妹動態牆 (含詳細項目) -->
+    <div id="friends" class="section">
+        <div id="friendsListContainer"></div>
+    </div>
+
+    <!-- Tab 3: 我的目標與名字設定 -->
+    <div id="settings" class="section">
+        <div class="setting-group">
+            <label>修改我的名字 (附帶小圖示)</label>
+            <input type="text" id="editUserName" placeholder="例如：🌸 HauE">
+        </div>
+        <div class="setting-group">
+            <label>自由增刪或修改你的良好習慣目標 (需維持 3 至 7 個)</label>
+            <div id="editHabitInputs"></div>
+        </div>
+        <button class="secondary-btn" onclick="addHabitInput()">＋ 新增一項習慣</button>
+        <button class="primary-btn" onclick="saveProfileAndHabits()">儲存所有修改</button>
+        <div class="tip">資料會即時同步至 Firebase 雲端，所有參與者都能即時看見你的最新進度！</div>
+    </div>
+</div>
+
+<!-- 自訂 Toast 提示框 -->
+<div id="toast" class="toast"></div>
+
+<script>
+    // 預設 12 位參與者初始資料
+    const defaultUsers = [
+        { id: "HauE", name: "🌸 HauE", habits: [{name: "喝水 1500ml"}, {name: "閱讀 15 分鐘"}, {name: "早起伸展"}, {name: "寫感恩日記"}], cheers: 0, records: {} },
+        { id: "Bonnie", name: "🐸 Bonnie", habits: [{name: "喝水 2000ml"}, {name: "吃水果"}, {name: "瑜伽 20分鐘"}, {name: "閱讀"}], cheers: 0, records: {} },
+        { id: "Winnie", name: "🍯 Winnie", habits: [{name: "早睡早起"}, {name: "護膚保養"}, {name: "喝溫水"}, {name: "背單字"}, {name: "寫日誌"}], cheers: 0, records: {} },
+        { id: "YingLan", name: "🌷Ying Lan", habits: [{name: "有氧運動"}, {name: "喝水 1500ml"}, {name: "聽Podcast"}], cheers: 0, records: {} },
+        { id: "貞", name: "☁️ 貞", habits: [{name: "腹肌訓練"}, {name: "閱讀 30分鐘"}, {name: "喝綠茶"}, {name: "整理房間"}], cheers: 0, records: {} },
+        { id: "Penny", name: "🎀 Penny", habits: [{name: "早起喝水"}, {name: "散步 3000步"}, {name: "拉筋伸展"}, {name: "英文學習"}], cheers: 0, records: {} },
+        { id: "chiching", name: "🌿 芷晴", habits: [{name: "喝水 1500ml"}, {name: "護眼休息"}, {name: "寫感恩日記"}], cheers: 0, records: {} },
+        { id: "kayan", name: "🍓 嘉欣", habits: [{name: "皮拉提斯"}, {name: "吃沙拉"}, {name: "早睡"}, {name: "敷面膜"}], cheers: 0, records: {} },
+        { id: "manee", name: "🍯 敏兒", habits: [{name: "喝溫檸檬水"}, {name: "看書 10頁"}, {name: "冥想 5分鐘"}], cheers: 0, records: {} },
+        { id: "heiyue", name: "🌻 希瑜", habits: [{name: "核心運動"}, {name: "戒糖一天"}, {name: "早起晨跑"}, {name: "閱讀"}], cheers: 0, records: {} },
+        { id: "tszchi", name: "✨ 梓淇", habits: [{name: "喝水 2000ml"}, {name: "寫手帳"}, {name: "伸展運動"}, {name: "不喝手搖飲"}], cheers: 0, records: {} },
+        { id: "hoiling", name: "🍊 凱琳", habits: [{name: "早起喝水"}, {name: "背單字"}, {name: "拉筋 15分"}, {name: "寫日記"}], cheers: 0, records: {} }
+    ];
+
+    // 隨機打氣說話與聖經金句庫
+    const cheerMessages = [
+        { text: "「你們要彼此相愛，像我愛你們一樣，這就是我的命令。」", author: "—— 約翰福音 15:12 🌸 在愛與陪伴中成長" },
+        { text: "「我的恩典夠你用的，因為我的能力是在人的軟弱上顯得完全。」", author: "—— 哥林多後書 12:9 🌿 今天的你已經很棒了！" },
+        { text: "「應當一無掛慮，只要凡事藉著禱告、祈求，和感謝，將你們所要的告訴神。」", author: "—— 腓立比書 4:6 ✨ 保持喜樂與平靜" },
+        { text: "「妳比自己想像的更堅強，今天也要為自己的小進步喝采！」", author: "—— 好姊妹溫馨提醒 💖" },
+        { text: "「一步一步慢慢來，堅持微小的習慣，會帶來巨大的轉變✨」", author: "—— 同盟加油站 🌷" },
+        { text: "「今天別忘了喝足夠的水，對自己好一點，妳值得最好的好心情！」", author: "—— 愛妳的姊妹們 🍊" },
+        { text: "「喜樂的心乃是良藥；憂傷的靈使骨枯乾。」", author: "—— 箴言 17:22 ☀️ 保持笑容，散發光芒" },
+        { text: "「無論做什麼，都要從心裡做，像是給主做的，不是給人做的。」", author: "——哥樓西書 3:23 🌱 專注於當下的每一個小成就" }
+    ];
+
+    let users = JSON.parse(localStorage.getItem('blooming_users_v6')) || defaultUsers;
+    window.users = users;
+    let currentUserId = users[0].id;
+
+    // 產生從 2026-11-02 開始的週次列表（共 9 週）
+    function generateWeeks() {
+        const weeks = [];
+        const startDate = new Date('2026-11-02'); // 第一週週一
+        for (let i = 0; i < 9; i++) {
+            const monday = new Date(startDate);
+            monday.setDate(startDate.getDate() + (i * 7));
+            
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+
+            const mStr = monday.toISOString().split('T')[0];
+            const sStr = sunday.toISOString().split('T')[0];
+            weeks.push({
+                key: mStr,
+                label: `第 ${i + 1} 週 (${mStr.slice(5)} ~ ${sStr.slice(5)})`
+            });
+        }
+        return weeks;
+    }
+
+    const availableWeeks = generateWeeks();
+    let selectedWeekKey = availableWeeks[0].key; // 預設第一週
+
+    function saveToLocalStorage() {
+        localStorage.setItem('blooming_users_v6', JSON.stringify(window.users));
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.innerText = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2500);
+    }
+
+    function refreshCheerMessage() {
+        const randomIndex = Math.floor(Math.random() * cheerMessages.length);
+        const item = cheerMessages[randomIndex];
+        document.getElementById('cheerText').innerText = item.text;
+        document.getElementById('cheerAuthor').innerText = item.author;
+    }
+
+    // 取得當前使用者
+    function getCurrentUser() {
+        return window.users.find(u => u.id === currentUserId) || window.users[0];
+    }
+
+    // 初始化選單與週次
+    function initUserAndWeekSelect() {
+        const uSelect = document.getElementById('userSelect');
+        uSelect.innerHTML = '';
+        window.users.forEach(u => {
+            uSelect.innerHTML += `<option value="${u.id}" ${u.id === currentUserId ? 'selected' : ''}>${u.name}</option>`;
+        });
+
+        const wSelect = document.getElementById('weekSelect');
+        wSelect.innerHTML = '';
+        availableWeeks.forEach(w => {
+            wSelect.innerHTML += `<option value="${w.key}" ${w.key === selectedWeekKey ? 'selected' : ''}>${w.label}</option>`;
+        });
+    }
+
+    function changeWeek(newWeekKey) {
+        selectedWeekKey = newWeekKey;
+        renderHabits();
+        renderFriends();
+    }
+
+    function renderAllViews() {
+        initUserAndWeekSelect();
+        renderHabits();
+        renderFriends();
+        renderSettingsInputs();
+    }
+    window.renderAllViews = renderAllViews;
+
+    function switchUser(userId) {
+        currentUserId = userId;
+        renderHabits();
+        renderSettingsInputs();
+    }
+
+    // 判斷習慣完成狀態
+    function isHabitDone(user, habitIdx, weekKey) {
+        if (!user.records) user.records = {};
+        if (!user.records[weekKey]) return false;
+        return !!user.records[weekKey][habitIdx];
+    }
+
+    // 渲染打卡卡片
+    function renderHabits() {
+        const user = getCurrentUser();
+        const container = document.getElementById('habitListContainer');
+        const overview = document.getElementById('weeklyOverview');
+
+        let completedInWeek = 0;
+        const totalInWeek = user.habits.length;
+
+        user.habits.forEach((_, idx) => {
+            if (isHabitDone(user, idx, selectedWeekKey)) completedInWeek++;
+        });
+
+        const weeklyPercent = totalInWeek > 0 ? Math.round((completedInWeek / totalInWeek) * 100) : 0;
+        const currentWeekObj = availableWeeks.find(w => w.key === selectedWeekKey);
+
+        overview.innerHTML = `
+            <div style="font-size:13px; font-weight:700; color:var(--primary); margin-bottom:4px;">
+                🏆 ${user.name} 本週表現：已完成 ${completedInWeek} / ${totalInWeek} 個目標 (${weeklyPercent}%)
+            </div>
+            <div style="font-size:11px; color:var(--text-light);">
+                當前檢視：${currentWeekObj ? currentWeekObj.label : ''}
+            </div>
+        `;
+
+        container.innerHTML = `<p style="font-size:14px; color:var(--primary); font-weight:700; margin-bottom:12px;">【${currentWeekObj ? currentWeekObj.label : ''}】習慣打卡清單：</p>`;
+
+        user.habits.forEach((habit, index) => {
+            const done = isHabitDone(user, index, selectedWeekKey);
+            container.innerHTML += `
+                <div class="habit-card">
+                    <div class="habit-info">
+                        <h3>${habit.name}</h3>
+                        <span>習慣目標 ${index + 1}</span>
+                    </div>
+                    <button class="check-btn ${done ? 'checked' : ''}" onclick="toggleHabit(${index})">
+                        ${done ? '✓' : ''}
+                    </button>
+                </div>
+            `;
+        });
+    }
+
+    function toggleHabit(index) {
+        const user = getCurrentUser();
+
+        if (!user.records) user.records = {};
+        if (!user.records[selectedWeekKey]) user.records[selectedWeekKey] = {};
+
+        user.records[selectedWeekKey][index] = !user.records[selectedWeekKey][index];
+
+        saveToLocalStorage();
+        syncUserToCloud(user);
+        renderHabits();
+        renderFriends();
+    }
+
+    // 渲染姊妹動態牆 (檢視特定週次排行榜)
+    function renderFriends() {
+        const container = document.getElementById('friendsListContainer');
+        const currentWeekObj = availableWeeks.find(w => w.key === selectedWeekKey);
+
+        container.innerHTML = `<div style="font-size:13px; font-weight:700; color:var(--primary); margin-bottom:10px;">📅 【${currentWeekObj ? currentWeekObj.label : ''}】姊妹每週表現榜</div>`;
+
+        const sortedUsers = [...window.users].map(u => {
+            const totalWeekly = u.habits.length;
+            let completedWeekly = 0;
+
+            u.habits.forEach((_, idx) => {
+                if (isHabitDone(u, idx, selectedWeekKey)) completedWeekly++;
+            });
+
+            return {
+                ...u,
+                completedWeekly,
+                totalWeekly,
+                weeklyPercent: totalWeekly > 0 ? Math.round((completedWeekly / totalWeekly) * 100) : 0
+            };
+        }).sort((a, b) => b.weeklyPercent - a.weeklyPercent);
+
+        sortedUsers.forEach((u, rank) => {
+            let habitsHtml = '';
+            u.habits.forEach((h, idx) => {
+                const done = isHabitDone(u, idx, selectedWeekKey);
+                habitsHtml += `<span class="friend-habit-tag ${done ? 'done' : ''}">${done ? '✓ ' : '○ '}${h.name}</span>`;
+            });
+
+            const medal = rank === 0 ? '🥇 ' : rank === 1 ? '🥈 ' : rank === 2 ? '🥉 ' : '';
+
+            container.innerHTML += `
+                <div class="friend-item">
+                    <div class="friend-header">
+                        <span>${medal}${u.name} ${u.id === currentUserId ? '(你)' : ''}</span>
+                        <span>完成：${u.completedWeekly}/${u.totalWeekly} (${u.weeklyPercent}%)</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: ${u.weeklyPercent}%;"></div>
+                    </div>
+                    <div class="friend-habits-detail">
+                        ${habitsHtml}
+                    </div>
+                    <div class="friend-footer">
+                        <button class="cheer-btn" onclick="sendCheer('${u.id}')">❤️ 為她打氣</button>
+                        <span class="cheer-count">✨ 獲得 ${u.cheers || 0} 個打氣</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function sendCheer(userId) {
+        const targetUser = window.users.find(u => u.id === userId);
+        if (targetUser) {
+            targetUser.cheers = (targetUser.cheers || 0) + 1;
+            saveToLocalStorage();
+            syncUserToCloud(targetUser);
+            renderFriends();
+            
+            // 為打氣者隨機送上一句鼓舞的話
+            const randomCheer = cheerMessages[Math.floor(Math.random() * cheerMessages.length)].text;
+            showToast(`已為 ${targetUser.name} 送上打氣！❤️\n【送你一句話】${randomCheer}`);
+        }
+    }
+
+    // 設定區渲染與邏輯
+    function renderSettingsInputs() {
+        const user = getCurrentUser();
+        document.getElementById('editUserName').value = user.name;
+
+        const container = document.getElementById('editHabitInputs');
+        container.innerHTML = '';
+
+        user.habits.forEach((habit, index) => {
+            container.innerHTML += `
+                <div class="habit-input-row">
+                    <input type="text" value="${habit.name}" data-index="${index}" placeholder="輸入習慣名稱...">
+                    ${user.habits.length > 3 ? `<button class="delete-btn" onclick="removeHabitInput(${index})">刪除</button>` : ''}
+                </div>
+            `;
+        });
+    }
+
+    function addHabitInput() {
+        syncInputsToMemory();
+        const user = getCurrentUser();
+        if (user.habits.length >= 7) {
+            showToast('每位參與者最多設定 7 個習慣目標喔！');
+            return;
+        }
+        user.habits.push({ name: "" });
+        renderSettingsInputs();
+    }
+
+    function removeHabitInput(index) {
+        syncInputsToMemory();
+        const user = getCurrentUser();
+        if (user.habits.length <= 3) {
+            showToast('最少需要保留 3 個習慣目標喔！');
+            return;
+        }
+        user.habits.splice(index, 1);
+        renderSettingsInputs();
+    }
+
+    function syncInputsToMemory() {
+        const user = getCurrentUser();
+        const inputs = document.querySelectorAll('#editHabitInputs input');
+        inputs.forEach((input, index) => {
+            if (user.habits[index]) {
+                user.habits[index].name = input.value;
+            }
+        });
+    }
+
+    function saveProfileAndHabits() {
+        syncInputsToMemory();
+        const user = getCurrentUser();
+
+        const newName = document.getElementById('editUserName').value.trim();
+        if (newName !== '') {
+            user.name = newName;
+        }
+
+        let validHabits = [];
+        user.habits.forEach(h => {
+            if (h.name.trim() !== '') {
+                validHabits.push({ name: h.name.trim() });
+            }
+        });
+
+        if (validHabits.length < 3 || validHabits.length > 7) {
+            showToast('請確保設定的有效習慣數量在 3 到 7 個之間！');
+            return;
+        }
+
+        user.habits = validHabits;
+        saveToLocalStorage();
+        syncUserToCloud(user);
+        initUserAndWeekSelect();
+        renderHabits();
+        renderSettingsInputs();
+        renderFriends();
+        showToast('✨ 您的名字與目標已即時同步保存！');
+        switchTab('habits', { currentTarget: document.querySelectorAll('.tab-btn')[0] });
+    }
+
+    function switchTab(tabId, event) {
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.add('active');
+        }
+
+        if (tabId === 'settings') {
+            renderSettingsInputs();
+        } else if (tabId === 'friends') {
+            renderFriends();
+        }
+    }
+</script>
+
+<script>
+    // 提供之 Firebase 官方初始化編碼
+    const firebaseConfig = {
+      apiKey: "AIzaSyALfhe_an6E86eAUWN6s3UHY40AITCec0c",
+      authDomain: "fellow-sisters.firebaseapp.com",
+      projectId: "fellow-sisters",
+      storageBucket: "fellow-sisters.firebasestorage.app",
+      messagingSenderId: "526600785432",
+      appId: "1:526600785432:web:bdb3f4b55eab5dfdbb3d6d"
+    };
+    
+    // 初始化 Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+    window.db = db;
+    window.cloudEnabled = true;
+
+    // 將資料同步上傳 Firebase 雲端
+    function syncUserToCloud(user) {
+        if (window.db) {
+            db.collection('users').doc(user.id).set(user, { merge: true })
+                .catch(err => console.error("Firebase 保存失敗:", err));
+        }
+    }
+
+    function syncAllToCloud() {
+        if (window.db) {
+            window.users.forEach(u => syncUserToCloud(u));
+        }
+    }
+
+    // 即時監聽 Firebase 資料庫變化，多人即時同步進度
+    db.collection('users').onSnapshot((snapshot) => {
+        if (!snapshot.empty) {
+            const fetchedUsers = [];
+            snapshot.forEach(doc => {
+                fetchedUsers.push(doc.data());
+            });
+            // 保持初始順序
+            fetchedUsers.sort((a, b) => {
+                const idxA = defaultUsers.findIndex(du => du.id === a.id);
+                const idxB = defaultUsers.findIndex(du => du.id === b.id);
+                return (idxA !== -1 ? idxA : 99) - (idxB !== -1 ? idxB : 99);
+            });
+            window.users = fetchedUsers;
+            saveToLocalStorage();
+            renderAllViews();
+        } else {
+            // 初次若資料庫為空則上傳預設資料
+            syncAllToCloud();
+        }
+    }, (error) => {
+        console.error("Firebase 即時監聽失敗:", error);
+    });
+
+    // 頁面初始化載入
+    initUserAndWeekSelect();
+    renderHabits();
+    renderFriends();
+    renderSettingsInputs();
+    refreshCheerMessage();
+</script>
+</body>
+</html>
